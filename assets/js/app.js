@@ -10,7 +10,7 @@ var margin = {
 
 var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
-
+ 
 // Create an SVG wrapper, append an SVG group that will hold our chart, and shift the latter by left and top margins.
 var svg = d3.select("#scatter")
   .append("svg")
@@ -27,8 +27,8 @@ var chosenYAxis = "poverty";
 //Function for Updating x-scale Variable
 function xScale(acsData, chosenXAxis) {
     var xLinearScale = d3.scaleLinear()
-    .domain([d3.min(acsData, d => d[chosenXAxis]),
-        d3.max(acsData, d=> d[chosenXAxis])
+    .domain([d3.min(acsData, d => d[chosenXAxis] * 0.8),
+        d3.max(acsData, d=> d[chosenXAxis] * 1.0)
     ])
     .range([0, width]);
 
@@ -38,8 +38,8 @@ return xLinearScale;
 //Function for Updating y-scale Variable
 function yScale(acsData, chosenYAxis) {
     var yLinearScale = d3.scaleLinear()
-    .domain([d3.min(acsData, d => d[chosenYAxis]),
-        d3.max(acsData, d=> d[chosenYAxis])
+    .domain([d3.min(acsData, d => d[chosenYAxis] * 0.8),
+        d3.max(acsData, d=> d[chosenYAxis] * 1.0)
     ])
     .range([width, 0]);
 
@@ -89,34 +89,34 @@ function renderyCircles(circlesGroup, newYScale, chosenYAxis) {
 }
 
 
-// Function for Updating Tooltip
-function updateToolTip(chosenXAxis, circlesGroup) {
-    if (chosenXAxis === "healthcare") {
-        var label = "Healthcare (%)";
-    }
-    else {
-        var label = "Obesity (%)";
-    }
+// // Function for Updating Tooltip
+// function updateToolTip(chosenXAxis, circlesGroup) {
+//     if (chosenXAxis === "healthcare") {
+//         var label = "Healthcare (%)";
+//     }
+//     else {
+//         var label = "Obesity (%)";
+//     }
 
-    var toolTip = d3.tip()
-    .attr("class", "d3-tip")
-    .offset([80, -60])
-    .html(function(d) {
-      return (`${d.state}<br>${label} ${d[chosenXAxis]}`);
-    });
+//     var toolTip = d3.tip()
+//     .attr("class", "d3-tip")
+//     .offset([80, -60])
+//     .html(function(d) {
+//       return (`${d.state}<br>${label} ${d[chosenXAxis]}`);
+//     });
 
-circlesGroup.call(toolTip);
+// circlesGroup.call(toolTip);
 
-  circlesGroup.on("mouseover", function(data) {
-    toolTip.show(data);
-  })
-    // onmouseout event
-    .on("mouseout", function(data, index) {  
-      toolTip.hide(data);
-    });
+//   circlesGroup.on("mouseover", function(data) {
+//     toolTip.show(data);
+//   })
+//     // onmouseout event
+//     .on("mouseout", function(data, index) {  
+//       toolTip.hide(data);
+//     });
 
-  return circlesGroup;
-}
+//   return circlesGroup;
+// }
 
 
 // Import Data
@@ -182,7 +182,7 @@ d3.csv("assets/data/Data.csv").then(function(acsData) {
       })
       .attr("font-size", "10px")
       .attr("text-anchor", "middle")
-      .attr("fill", "black");
+      .attr("fill", "white");
 
     // Create Group for 2 x-axis labels
     var labelsGroup = chartGroup.append("g")
@@ -224,7 +224,7 @@ d3.csv("assets/data/Data.csv").then(function(acsData) {
         .text("Income ($)");
 
 // updateToolTip function above csv import
- var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+//  var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
  // x axis labels event listener
  labelsGroup.selectAll("text")
@@ -235,7 +235,6 @@ d3.csv("assets/data/Data.csv").then(function(acsData) {
 
        // replaces chosenXAxis with value
        chosenXAxis = value;
-
        // console.log(chosenXAxis)
 
        // functions here found above csv import
@@ -250,7 +249,6 @@ d3.csv("assets/data/Data.csv").then(function(acsData) {
 
        // updates circle labels
        var newCirclesText = chartGroup.selectAll("stateInitials")
-       .append("")
        .data(acsData)
        .enter()
        .append("text")
@@ -265,10 +263,10 @@ d3.csv("assets/data/Data.csv").then(function(acsData) {
        })
        .attr("font-size", "10px")
        .attr("text-anchor", "middle")
-       .attr("fill", "black");
+       .attr("fill", "white");
 
        // updates tooltips with new info
-       circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+      //  circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
        // changes classes to change bold text
        if (chosenXAxis === "healthcare") {
@@ -314,7 +312,6 @@ labelsyGroup.selectAll("text")
 
        // updates circle labels
        var newCirclesText = chartGroup.selectAll("stateInitials")
-       .remove()
        .data(acsData)
        .enter()
        .append("text")
@@ -329,10 +326,10 @@ labelsyGroup.selectAll("text")
        })
        .attr("font-size", "10px")
        .attr("text-anchor", "middle")
-       .attr("fill", "black");
+       .attr("fill", "white");
 
        // updates tooltips with new info
-       circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+      //  circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
        // changes classes to change bold text
        if (chosenYAxis === "poverty") {
@@ -357,4 +354,3 @@ labelsyGroup.selectAll("text")
   }).catch(function(error) {
     console.log(error);
   });
-
